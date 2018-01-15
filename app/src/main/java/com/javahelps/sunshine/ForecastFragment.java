@@ -66,6 +66,11 @@ public class ForecastFragment extends Fragment {
             weatherTask.execute("110007");
             return true ;
         }
+        if (id == R.id.action_settings_main){
+            Intent intent = new Intent(getActivity() , SettingsActivity.class);
+            startActivity(intent);
+            return true ;
+        }
 
         return super.onOptionsItemSelected(item);
     }

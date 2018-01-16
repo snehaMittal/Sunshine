@@ -2,9 +2,11 @@ package com.javahelps.sunshine;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -53,6 +55,12 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forcastfragment , menu);
     }
@@ -62,8 +70,7 @@ public class ForecastFragment extends Fragment {
 
         int id = item.getItemId();
         if (id == R.id.action_refresh){
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute("110007");
+            updateWeather();
             return true ;
         }
         if (id == R.id.action_settings_main){
@@ -75,19 +82,27 @@ public class ForecastFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateWeather() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = preferences.getString(getString(R.string.pref_location_key) ,
+                getString(R.string.pref_loaction_default) );
+        weatherTask.execute(location);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView  = inflater.inflate(R.layout.fragment_main , container , false);
-
-        String data[] = {"Today - Sunny - 88/63" , "Tomorrow - Foggy - 76/46" , "Wednesday - Cloudy - 72/63" ,
-                "Thursday - Rainy - 61/54" , "Friday - Foggy - 70/46" , "Saturday - Sunny - 76/68 "," Today - Sunny - 88/63" , "Tomorrow - Foggy - 76/46" , "Wednesday - Cloudy - 72/63" ,
-                "Thursday - Rainy - 61/54" , "Friday - Foggy - 70/46" , "Saturday - Sunny - 76/68"};
-
-        List<String> weekForcast = new ArrayList<>(Arrays.asList(data));
+//
+//        String data[] = {"Today - Sunny - 88/63" , "Tomorrow - Foggy - 76/46" , "Wednesday - Cloudy - 72/63" ,
+//                "Thursday - Rainy - 61/54" , "Friday - Foggy - 70/46" , "Saturday - Sunny - 76/68 "," Today - Sunny - 88/63" , "Tomorrow - Foggy - 76/46" , "Wednesday - Cloudy - 72/63" ,
+//                "Thursday - Rainy - 61/54" , "Friday - Foggy - 70/46" , "Saturday - Sunny - 76/68"};
+//
+//        List<String> weekForcast = new ArrayList<>(Arrays.asList(data));
         mForecastAdapter = new ArrayAdapter<String>(getActivity() , R.layout.list_item_forecast ,
-                R.id.list_item_forecast_textview , weekForcast);
+                R.id.list_item_forecast_textview , new ArrayList<String>());
 
         ListView listView = (ListView)rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);

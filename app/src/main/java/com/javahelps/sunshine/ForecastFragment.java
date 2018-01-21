@@ -70,7 +70,10 @@ public class ForecastFragment extends Fragment {
 
         int id = item.getItemId();
         if (id == R.id.action_refresh){
-            updateWeather();
+            FetchWeatherTask task = new FetchWeatherTask() ;
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String location = pref.getString(getString(R.string.pref_loaction_value) , getString(R.string.pref_loaction_default));
+            task.execute(location);
             return true ;
         }
         if (id == R.id.action_settings_main){

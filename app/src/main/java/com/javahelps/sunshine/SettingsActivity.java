@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -17,6 +19,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     TextView location ;
     TextView pincode ;
+    Spinner spinner ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +27,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         location = (TextView)findViewById(R.id.location);
         pincode = (TextView)findViewById(R.id.pincode);
+        spinner = (Spinner)findViewById(R.id.spinner_unit);
         location.setOnClickListener(this);
+        String[] items = new String[]{"Celcius" , "Fahreneit"};
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this , R.layout.support_simple_spinner_dropdown_item, items);
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
         getSupportActionBar().setTitle("Settings");
     }
 
